@@ -6,6 +6,7 @@ import WhyChooseUs from '../components/home/WhyChooseUs';
 import Process from '../components/home/Process';
 import Testimonials from '../components/home/Testimonials';
 import CTAFooter from '../components/home/CTAFooter';
+import PortfolioPreview from '../components/home/PortfolioPreview';
 
 const Home = () => {
     return (
@@ -20,6 +21,7 @@ const Home = () => {
             <WhyChooseUs />
             <Process />
             <Testimonials />
+            <PortfolioPreview />
             <CTAFooter />
         </>
     );

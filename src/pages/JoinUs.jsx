@@ -1,15 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Section from '../components/common/Section';
 import Button from '../components/common/Button';
 import { Briefcase, Heart, Globe, Zap } from 'lucide-react';
-
-const positions = [
-    { title: 'Freelance Flutter Developer', type: 'Remote / Contract', desc: 'Build beautiful cross-platform apps.' },
-    { title: 'Senior UX/UI Designer', type: 'Remote / Full-time', desc: 'Lead our design system and client projects.' },
-    { title: 'Sales Partner', type: 'Commission Based', desc: 'Help us find amazing clients to work with.' },
-    { title: 'Campus Ambassador', type: 'Internship', desc: 'Represent PyrusMedia at your university.' },
-];
+import { DataContext } from '../context/DataProvider';
 
 const benefits = [
     { icon: Globe, title: 'Remote First', desc: 'Work from anywhere in the world.' },
@@ -18,16 +12,40 @@ const benefits = [
 ];
 
 const JoinUs = () => {
-    const [formData, setFormData] = useState({ name: '', email: '', role: '', portfolio: '', message: '' });
+    const { jobs: positions } = useContext(DataContext);
+    const [formData, setFormData] = useState({ name: '', email: '', role: '', portfolio: '', message: '', resume: null });
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // Strict Validation
+        if (formData.resume && formData.resume.type !== 'application/pdf') {
+            alert('Error: Please upload a valid PDF file.');
+            return;
+        }
+
         console.log('Application Submitted:', formData);
+        if (formData.resume) {
+            console.log('Resume File:', formData.resume.name);
+        }
         alert('Thank you for your application! We will be in touch soon.');
-        setFormData({ name: '', email: '', role: '', portfolio: '', message: '' });
+        setFormData({ name: '', email: '', role: '', portfolio: '', message: '', resume: null });
     };
 
     const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.type !== 'application/pdf') {
+                alert('Only PDF files are allowed.');
+                e.target.value = null; // Reset input
+                setFormData({ ...formData, resume: null });
+                return;
+            }
+            setFormData({ ...formData, resume: file });
+        }
+    };
 
     return (
         <>
@@ -69,7 +87,7 @@ const JoinUs = () => {
                             {positions.map((pos, i) => (
                                 <div key={i} className="p-6 bg-[#111] rounded-xl border border-gray-800 hover:border-gray-700 transition-colors">
                                     <div className="flex justify-between items-start mb-2">
-                                        <h3 className="text-xl font-bold text-white mb-2">{pos.role}</h3>
+                                        <h3 className="text-xl font-bold text-white mb-2">{pos.title}</h3>
                                         <span className="text-xs bg-[#bebd19]/10 text-[#bebd19] px-2 py-1 rounded">{pos.type}</span>
                                     </div>
                                     <p className="text-gray-400 mb-4">{pos.desc}</p>
@@ -133,6 +151,17 @@ const JoinUs = () => {
                                         value={formData.portfolio}
                                         onChange={handleChange}
                                         className="w-full bg-black border border-gray-800 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-gray-400 text-sm mb-2">Upload Resume (PDF only)</label>
+                                    <input
+                                        type="file"
+                                        name="resume"
+                                        accept="application/pdf, .pdf"
+                                        onChange={handleFileChange}
+                                        className="w-full bg-black border border-gray-800 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#bebd19] file:text-black hover:file:bg-[#a3a215] cursor-pointer"
                                         required
                                     />
                                 </div>

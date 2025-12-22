@@ -18,18 +18,18 @@ const Footer = () => {
                             Transforming businesses with smart digital, mobile, and AI solutions. We help you build modern apps and automate workflows.
                         </p>
                         <div className="flex gap-4">
-                            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-900 rounded-full hover:bg-[#bebd19] hover:text-black transition-all">
+                            <a href="https://www.linkedin.com/company/pyrus-media/" target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-900 rounded-full hover:bg-[#bebd19] hover:text-black transition-all">
                                 <Linkedin size={20} />
                             </a>
-                            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-900 rounded-full hover:bg-pink-600 hover:text-white transition-all">
+                            <a href="https://www.instagram.com/pyrusmedia.in?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-900 rounded-full hover:bg-pink-600 hover:text-white transition-all">
                                 <Instagram size={20} />
                             </a>
-                            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-900 rounded-full hover:bg-red-600 hover:text-white transition-all">
+                            {/* <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-900 rounded-full hover:bg-red-600 hover:text-white transition-all">
                                 <Youtube size={20} />
                             </a>
                             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-900 rounded-full hover:bg-[#bebd19] hover:text-black transition-all">
                                 <Facebook size={20} />
-                            </a>
+                            </a> */}
                         </div>
                     </div>
 
@@ -68,11 +68,11 @@ const Footer = () => {
                             </li>
                             <li className="flex items-center gap-3">
                                 <Phone className="text-blue-500 shrink-0" size={20} />
-                                <a href="tel:+1234567890" className="hover:text-blue-400">+1 (234) 567-890</a>
+                                <a href="tel:+917720830178" className="hover:text-blue-400">+91 7720830178</a>
                             </li>
                             <li className="flex items-center gap-3">
                                 <Mail className="text-blue-500 shrink-0" size={20} />
-                                <a href="mailto:hello@pyrusmedia.com" className="hover:text-blue-400">hello@pyrusmedia.com</a>
+                                <a href="mailto:pyrusmediame@gmail.com" className="hover:text-blue-400">pyrusmediame@gmail.com</a>
                             </li>
                         </ul>
                     </div>
@@ -81,8 +81,8 @@ const Footer = () => {
                 <div className="border-t border-gray-900 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
                     <p>&copy; {currentYear} PyrusMedia. All rights reserved.</p>
                     <div className="flex gap-6 mt-4 md:mt-0">
-                        <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-                        <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+                        <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Privacy Policy</Link>
+                        <Link to="/terms" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Terms of Service</Link>
                     </div>
                 </div>
             </div>

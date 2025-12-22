@@ -1,7 +1,6 @@
 import React from 'react';
 import Section from '../common/Section';
 import { CheckCircle2 } from 'lucide-react';
-import rocketImg from '../../assets/images/why-choose-us.png';
 
 const benefits = [
     {
@@ -49,7 +48,7 @@ const WhyChooseUs = () => {
                     <div className="absolute inset-0 bg-blue-600/20 blur-[100px] rounded-full pointing-events-none" />
                     <div className="relative rounded-2xl border border-gray-800 overflow-hidden">
                         <img
-                            src={rocketImg}
+                            src="https://images.unsplash.com/photo-1517976487492-5750f3195933?auto=format&fit=crop&q=80&w=1000"
                             alt="Rocket taking off representing speed and growth"
                             className="w-full h-full object-cover"
                         />

@@ -1,37 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Section from '../components/common/Section';
 import Button from '../components/common/Button';
 import { BookOpen, Video, Users, Award } from 'lucide-react';
-
-const courses = [
-    {
-        title: 'Flutter for Beginners',
-        desc: 'Build your first mobile app with Flutter and Dart. No prior experience required.',
-        level: 'Beginner',
-        format: 'Video Course',
-        price: '$49',
-        status: 'Enroll Now'
-    },
-    {
-        title: 'Mastering Digital Marketing',
-        desc: 'Learn SEO, SEM, and Social Media strategies to grow any business.',
-        level: 'Intermediate',
-        format: 'Live Sessions',
-        price: '$99',
-        status: 'Coming Soon'
-    },
-    {
-        title: 'AI Automation Workflow',
-        desc: 'Automate your business processes using n8n and OpenAI.',
-        level: 'Advanced',
-        format: 'Workshop',
-        price: '$149',
-        status: 'Waitlist'
-    }
-];
+import { DataContext } from '../context/DataProvider';
 
 const ELearning = () => {
+    const { courses } = useContext(DataContext);
     return (
         <>
             <Helmet>

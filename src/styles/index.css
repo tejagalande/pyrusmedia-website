@@ -133,3 +133,16 @@ img {
     background: rgba(59, 130, 246, 0.1);
     color: white;
 }
+
+/* React Quill Overrides */
+.ql-container {
+    min-height: 150px;
+    height: auto !important;
+}
+
+.ql-editor {
+    min-height: 150px;
+    max-height: 500px;
+    overflow-y: auto;
+    resize: vertical;
+}

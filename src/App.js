@@ -20,6 +20,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import CourseDetail from './pages/CourseDetail';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
               <Route path="/services" element={<Services />} />
               <Route path="/services/:serviceId" element={<ServiceDetail />} />
               <Route path="/e-learning" element={<ELearning />} />
+              <Route path="/e-learning/course/:courseId" element={<CourseDetail />} />
               <Route path="/join-us" element={<JoinUs />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/contact" element={<Contact />} />

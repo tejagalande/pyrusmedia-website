@@ -1,93 +1,159 @@
 import React, { createContext, useState, useEffect } from 'react';
+import { supabase } from '../supabase';
 
 export const DataContext = createContext();
 
-// Initial Data (Fallbacks if localStorage is empty)
-const initialCourses = [
-    {
-        id: 1,
-        title: 'Flutter for Beginners',
-        desc: 'Build your first mobile app with Flutter and Dart. No prior experience required.',
-        level: 'Beginner',
-        format: 'Video Course',
-        price: '$49',
-        status: 'Enroll Now'
-    },
-    {
-        id: 2,
-        title: 'Mastering Digital Marketing',
-        desc: 'Learn SEO, SEM, and Social Media strategies to grow any business.',
-        level: 'Intermediate',
-        format: 'Live Sessions',
-        price: '$99',
-        status: 'Coming Soon'
-    },
-    {
-        id: 3,
-        title: 'AI Automation Workflow',
-        desc: 'Automate your business processes using n8n and OpenAI.',
-        level: 'Advanced',
-        format: 'Workshop',
-        price: '$149',
-        status: 'Waitlist'
-    }
-];
-
-const initialJobs = [
-    { id: 1, title: 'Freelance Flutter Developer', type: 'Remote / Contract', desc: 'Build beautiful cross-platform apps.' },
-    { id: 2, title: 'Senior UX/UI Designer', type: 'Remote / Full-time', desc: 'Lead our design system and client projects.' },
-    { id: 3, title: 'Sales Partner', type: 'Commission Based', desc: 'Help us find amazing clients to work with.' },
-    { id: 4, title: 'Campus Ambassador', type: 'Internship', desc: 'Represent PyrusMedia at your university.' },
-];
-
 export const DataProvider = ({ children }) => {
-    // Load from localStorage or use initial data
-    const [courses, setCourses] = useState(() => {
-        const saved = localStorage.getItem('pyrus_courses');
-        return saved ? JSON.parse(saved) : initialCourses;
-    });
+    const [courses, setCourses] = useState([]);
+    const [jobs, setJobs] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const [jobs, setJobs] = useState(() => {
-        const saved = localStorage.getItem('pyrus_jobs');
-        return saved ? JSON.parse(saved) : initialJobs;
-    });
-
-    // Save to localStorage whenever data changes
+    // Fetch Initial Data
     useEffect(() => {
-        localStorage.setItem('pyrus_courses', JSON.stringify(courses));
-    }, [courses]);
+        fetchData();
+    }, []);
 
-    useEffect(() => {
-        localStorage.setItem('pyrus_jobs', JSON.stringify(jobs));
-    }, [jobs]);
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            const { data: coursesData, error: coursesError } = await supabase
+                .from('courses')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (coursesError) throw coursesError;
+            setCourses(coursesData || []);
+
+            const { data: jobsData, error: jobsError } = await supabase
+                .from('jobs')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (jobsError) throw jobsError;
+            setJobs(jobsData || []);
+
+        } catch (error) {
+            console.error('Error fetching data:', error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Actions
-    const addCourse = (course) => {
-        setCourses([...courses, { ...course, id: Date.now() }]);
+    const addCourse = async (course) => {
+        try {
+            // Remove any id if present to let DB handle it, and ensure we only send schema fields
+            const { id, ...courseData } = course;
+            const { data, error } = await supabase
+                .from('courses')
+                .insert([courseData])
+                .select();
+
+            if (error) throw error;
+            if (data) setCourses([data[0], ...courses]);
+            return { success: true };
+        } catch (error) {
+            console.error('Error adding course:', error.message);
+            return { success: false, message: error.message };
+        }
     };
 
-    const deleteCourse = (id) => {
-        setCourses(courses.filter(course => course.id !== id));
+    const deleteCourse = async (id) => {
+        try {
+            const { error } = await supabase
+                .from('courses')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+            setCourses(courses.filter(course => course.id !== id));
+            return { success: true };
+        } catch (error) {
+            console.error('Error deleting course:', error.message);
+            return { success: false, message: error.message };
+        }
     };
 
-    const updateCourse = (updatedCourse) => {
-        setCourses(courses.map(course => (course.id === updatedCourse.id ? updatedCourse : course)));
+    const updateCourse = async (updatedCourse) => {
+        try {
+            // Extract id and created_at to avoid sending them in the update body
+            const { id, created_at, ...updates } = updatedCourse;
+
+            if (!id) {
+                throw new Error("Cannot update course: Missing ID");
+            }
+
+            const { error } = await supabase
+                .from('courses')
+                .update(updates)
+                .eq('id', id);
+
+            if (error) throw error;
+
+            // In local state, we use the full object including ID
+            setCourses(courses.map(course => (course.id === id ? { ...course, ...updates } : course)));
+            return { success: true };
+        } catch (error) {
+            console.error('Error updating course:', error.message);
+            return { success: false, message: error.message };
+        }
     };
 
-    const addJob = (job) => {
-        setJobs([...jobs, { ...job, id: Date.now() }]);
+    const addJob = async (job) => {
+        try {
+            // Clean up job object. 'role' property was added in AdminDashboard but not in schema.
+            // Also remove id if present.
+            const { id, role, ...jobData } = job;
+            const { data, error } = await supabase
+                .from('jobs')
+                .insert([jobData])
+                .select();
+
+            if (error) throw error;
+            if (data) setJobs([data[0], ...jobs]);
+            return { success: true };
+        } catch (error) {
+            console.error('Error adding job:', error.message);
+            return { success: false, message: error.message };
+        }
     };
 
-    const deleteJob = (id) => {
-        setJobs(jobs.filter(job => job.id !== id));
+    const deleteJob = async (id) => {
+        try {
+            const { error } = await supabase
+                .from('jobs')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+            setJobs(jobs.filter(job => job.id !== id));
+            return { success: true };
+        } catch (error) {
+            console.error('Error deleting job:', error.message);
+            return { success: false, message: error.message };
+        }
     };
 
-    const updateJob = (updatedJob) => {
-        setJobs(jobs.map(job => (job.id === updatedJob.id ? updatedJob : job)));
+    const updateJob = async (updatedJob) => {
+        try {
+            // Remove role if present to avoid schema error during update
+            const { role, ...cleanJob } = updatedJob;
+            const { error } = await supabase
+                .from('jobs')
+                .update(cleanJob)
+                .eq('id', updatedJob.id);
+
+            if (error) throw error;
+            setJobs(jobs.map(job => (job.id === updatedJob.id ? updatedJob : job)));
+            return { success: true };
+        } catch (error) {
+            console.error('Error updating job:', error.message);
+            return { success: false, message: error.message };
+        }
     };
 
     return (
-        <DataContext.Provider value={{ courses, addCourse, deleteCourse, updateCourse, jobs, addJob, deleteJob, updateJob }}>
+        <DataContext.Provider value={{ courses, addCourse, deleteCourse, updateCourse, jobs, addJob, deleteJob, updateJob, loading }}>
             {children}
         </DataContext.Provider>
     );

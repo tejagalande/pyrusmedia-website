@@ -12,7 +12,7 @@ const benefits = [
 ];
 
 const JoinUs = () => {
-    const { jobs: positions } = useContext(DataContext);
+    const { jobs: positions, loading } = useContext(DataContext);
     const [formData, setFormData] = useState({ name: '', email: '', role: '', portfolio: '', message: '', resume: null });
 
     const handleSubmit = (e) => {
@@ -84,18 +84,27 @@ const JoinUs = () => {
 
                         <h2 className="text-3xl font-bold text-white mb-8">Open Positions</h2>
                         <div className="space-y-4">
-                            {positions.map((pos, i) => (
-                                <div key={i} className="p-6 bg-[#111] rounded-xl border border-gray-800 hover:border-gray-700 transition-colors">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <h3 className="text-xl font-bold text-white mb-2">{pos.title}</h3>
-                                        <span className="text-xs bg-[#bebd19]/10 text-[#bebd19] px-2 py-1 rounded">{pos.type}</span>
+                            {loading ? (
+                                <div className="text-gray-400 py-10 text-center">Loading open positions...</div>
+                            ) : positions.length > 0 ? (
+                                positions.map((pos, i) => (
+                                    <div key={i} className="p-6 bg-[#111] rounded-xl border border-gray-800 hover:border-gray-700 transition-colors">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <h3 className="text-xl font-bold text-white mb-2">{pos.title}</h3>
+                                            <span className="text-xs bg-[#bebd19]/10 text-[#bebd19] px-2 py-1 rounded">{pos.type}</span>
+                                        </div>
+                                        <p className="text-gray-400 mb-4">{pos.desc}</p>
+                                        <button className="text-[#bebd19] text-sm font-semibold hover:text-white transition-colors">
+                                            Apply Now &rarr;
+                                        </button>
                                     </div>
-                                    <p className="text-gray-400 mb-4">{pos.desc}</p>
-                                    <button className="text-[#bebd19] text-sm font-semibold hover:text-white transition-colors">
-                                        Apply Now &rarr;
-                                    </button>
+                                ))
+                            ) : (
+                                <div className="p-8 bg-[#111] rounded-xl border border-gray-800 border-dashed text-center">
+                                    <p className="text-gray-400">No open positions at the moment.</p>
+                                    <p className="text-sm text-gray-500 mt-2">Feel free to send us your resume anyway!</p>
                                 </div>
-                            ))}
+                            )}
                         </div>
                     </div>
 

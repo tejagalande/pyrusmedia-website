@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronDown, Phone } from 'lucide-react';
 import Button from '../common/Button';
 
+import logo from '../../assets/images/pyrus_media_logo.png';
+
 const services = [
     { title: 'Digital Marketing', path: '/services/digital-marketing' },
     { title: 'UX/UI Design', path: '/services/ui-ux-design' },
@@ -40,11 +42,8 @@ const Header = () => {
         >
             <div className="container mx-auto px-4 flex justify-between items-center text-white">
                 {/* Logo */}
-                <Link to="/" className="text-2xl font-bold tracking-tighter flex items-center gap-2 group">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#bebd19] to-[#a3a215] flex items-center justify-center transform group-hover:rotate-12 transition-transform">
-                        <span className="text-black font-bold text-xl">P</span>
-                    </div>
-                    <span>PYRUS<span className="text-[#bebd19]">MEDIA</span></span>
+                <Link to="/" className="flex items-center gap-2 group">
+                    <img src={logo} alt="Pyrus Media" className="h-12 w-auto object-contain" />
                 </Link>
 
                 {/* Desktop Navigation */}

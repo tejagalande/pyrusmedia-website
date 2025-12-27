@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Linkedin, Instagram, Youtube, Facebook } from 'lucide-react';
 
+import logo from '../../assets/images/pyrus_media_logo.png';
+
 const Footer = () => {
     const currentYear = new Date().getFullYear();
 
@@ -11,8 +13,8 @@ const Footer = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
                     {/* Brand & Info */}
                     <div>
-                        <Link to="/" className="text-2xl font-bold tracking-tighter text-white block mb-6">
-                            PYRUS<span className="text-[#bebd19]">MEDIA</span>
+                        <Link to="/" className="block mb-6">
+                            <img src={logo} alt="Pyrus Media" className="h-16 w-auto object-contain" />
                         </Link>
                         <p className="text-gray-400 mb-6 leading-relaxed">
                             Transforming businesses with smart digital, mobile, and AI solutions. We help you build modern apps and automate workflows.

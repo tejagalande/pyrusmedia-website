@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronDown, Phone } from 'lucide-react';
 import Button from '../common/Button';
@@ -19,6 +19,7 @@ const Header = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isServiceDropdownOpen, setIsServiceDropdownOpen] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -32,6 +33,17 @@ const Header = () => {
         setIsMobileMenuOpen(false);
         setIsServiceDropdownOpen(false);
     }, [location]);
+
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isMobileMenuOpen]);
 
     return (
         <header
@@ -97,45 +109,60 @@ const Header = () => {
 
                 {/* Mobile Menu Toggle */}
                 <button
-                    className="md:hidden p-2 text-white"
+                    className="md:hidden p-2 text-white text-3xl leading-none"
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 >
-                    {isMobileMenuOpen ? <X /> : <Menu />}
+                    {isMobileMenuOpen ? '✕' : '☰'}
                 </button>
             </div>
 
             {/* Mobile Menu Overlay */}
-            <AnimatePresence>
-                {isMobileMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: '100vh' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="md:hidden fixed inset-0 top-[60px] bg-black/95 backdrop-blur-xl z-40 overflow-y-auto"
-                    >
-                        <div className="container mx-auto px-4 py-8 flex flex-col gap-2 text-white">
-                            <Link to="/" className="text-xl font-medium py-3 border-b border-white/10">Home</Link>
-                            <Link to="/about" className="text-xl font-medium py-3 border-b border-white/10">About</Link>
+            {isMobileMenuOpen && (
+                <div
+                    className="md:hidden fixed top-0 left-0 w-full h-[100dvh] bg-black z-[60] overflow-y-auto flex flex-col"
+                >
+                    {/* Internal Mobile Header */}
+                    <div className="flex justify-between items-center p-4 border-b border-white/10">
+                        <Link to="/" className="flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
+                            <img src={logo} alt="Pyrus Media" className="h-10 w-auto object-contain" />
+                        </Link>
+                        <button
+                            className="text-white text-3xl leading-none"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                            ✕
+                        </button>
+                    </div>
 
-                            <div className="py-3 border-b border-white/10">
-                                <div className="text-xl font-medium text-gray-400 mb-3">Services</div>
-                                <div className="pl-4 flex flex-col gap-3">
-                                    {services.map(s => (
-                                        <Link key={s.path} to={s.path} className="text-base text-gray-300 hover:text-[#bebd19]">{s.title}</Link>
-                                    ))}
-                                </div>
-                            </div>
+                    {/* Menu Content */}
+                    <div className="container mx-auto px-4 py-8 flex flex-col gap-2 text-white">
+                        <Link to="/" className="text-xl font-medium py-3 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+                        <Link to="/about" className="text-xl font-medium py-3 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
 
-                            <Link to="/e-learning" className="text-xl font-medium py-3 border-b border-white/10">E-Learning</Link>
-                            <Link to="/join-us" className="text-xl font-medium py-3 border-b border-white/10">Join Us</Link>
-
-                            <div className="mt-8">
-                                <Button to="/contact" className="w-full justify-center">Book a Free Consultation</Button>
+                        <div className="py-3 border-b border-white/10">
+                            <div className="text-xl font-medium text-gray-400 mb-3">Services</div>
+                            <div className="pl-4 flex flex-col gap-3">
+                                {services.map(s => (
+                                    <Link key={s.path} to={s.path} className="text-base text-gray-300 hover:text-[#bebd19]" onClick={() => setIsMobileMenuOpen(false)}>{s.title}</Link>
+                                ))}
                             </div>
                         </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+
+                        <Link to="/e-learning" className="text-xl font-medium py-3 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>E-Learning</Link>
+                        <Link to="/join-us" className="text-xl font-medium py-3 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>Join Us</Link>
+
+                        <div className="mt-8">
+                            <Link
+                                to="/contact"
+                                className="w-full justify-center btn btn-primary flex items-center py-3 rounded-full font-bold bg-[#bebd19] text-black hover:bg-[#d4d325] transition-colors"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                                Book a Free Consultation
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            )}
         </header>
     );
 };

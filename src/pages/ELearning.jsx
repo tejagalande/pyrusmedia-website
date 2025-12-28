@@ -1,12 +1,15 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Section from '../components/common/Section';
 import Button from '../components/common/Button';
 import { BookOpen, Video, Users, Award } from 'lucide-react';
 import { DataContext } from '../context/DataProvider';
+import EnrollmentModal from '../components/common/EnrollmentModal';
 
 const ELearning = () => {
     const { courses, loading } = useContext(DataContext);
+    const [selectedCourse, setSelectedCourse] = useState(null);
+    const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
     return (
         <>
             <Helmet>
@@ -59,9 +62,19 @@ const ELearning = () => {
                                     </h3>
                                     <p className="text-gray-400 text-sm mb-4 line-clamp-3" dangerouslySetInnerHTML={{ __html: course.desc.replace(/<[^>]*>?/gm, '') }}></p>
                                 </div>
-                                <div className="p-6 pt-0 mt-auto flex justify-between items-center border-t border-gray-800/50">
+                                <div className="p-6 pt-2 mt-auto flex justify-between items-center border-t border-gray-800/50">
+
                                     <span className="text-white font-bold text-lg">{course.price}</span>
-                                    <Button variant={course.status === 'Enroll Now' ? 'primary' : 'outline'} className="text-sm px-4 py-2">
+                                    <Button
+                                        variant={course.status === 'Enroll Now' ? 'primary' : 'outline'}
+                                        className="text-sm px-4 py-2"
+                                        onClick={() => {
+                                            if (course.status === 'Enroll Now') {
+                                                setSelectedCourse(course);
+                                                setIsEnrollModalOpen(true);
+                                            }
+                                        }}
+                                    >
                                         {course.status}
                                     </Button>
                                 </div>
@@ -74,6 +87,11 @@ const ELearning = () => {
                         </div>
                     )}
                 </div>
+                <EnrollmentModal
+                    isOpen={isEnrollModalOpen}
+                    onClose={() => setIsEnrollModalOpen(false)}
+                    course={selectedCourse}
+                />
             </Section>
 
             <Section className="bg-[#0a0a0a]">

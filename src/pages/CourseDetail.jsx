@@ -4,12 +4,14 @@ import { Helmet } from 'react-helmet-async';
 import { DataContext } from '../context/DataProvider';
 import Section from '../components/common/Section';
 import Button from '../components/common/Button';
+import EnrollmentModal from '../components/common/EnrollmentModal';
 
 const CourseDetail = () => {
     const { courseId } = useParams();
     const { courses } = useContext(DataContext);
     const navigate = useNavigate();
     const [course, setCourse] = useState(null);
+    const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
 
     useEffect(() => {
         // Handle both number and string IDs in case data source changes or URL param type varies
@@ -80,10 +82,16 @@ const CourseDetail = () => {
                         <Button
                             variant={course.status === 'Enroll Now' ? 'primary' : 'outline'}
                             className="text-lg px-8 py-3 w-full md:w-auto"
+                            onClick={() => setIsEnrollModalOpen(true)}
                         >
                             {course.status}
                         </Button>
                     </div>
+                    <EnrollmentModal
+                        isOpen={isEnrollModalOpen}
+                        onClose={() => setIsEnrollModalOpen(false)}
+                        course={course}
+                    />
                 </div>
             </Section>
         </>
